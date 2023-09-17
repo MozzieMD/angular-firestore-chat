@@ -1,4 +1,4 @@
-import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import { Component, NgModule} from '@angular/core';
 import { v4 as uuidv4 } from 'uuid';
 @Component({
   selector: 'app-root',
@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'node-api';
+  title = 'angular-chat';
 
   ngOnInit() {
     if(localStorage.getItem('userId') == undefined)

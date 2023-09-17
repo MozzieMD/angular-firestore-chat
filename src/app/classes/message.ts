@@ -1,21 +1,33 @@
+import { DocumentData, Timestamp } from "firebase/firestore";
+import { MessageType } from "./message-type";
 export class Message {
   public id: string;
   public nickname: string;
   public message: string;
-  public sent_at: string;
-  public edit_on: string | null = null;
+  public sent_at: Timestamp;
+  public edit_on: Timestamp | null = null;
   public isOwner: boolean = false;
-  public type: 'text' | 'image' = 'text';
+  public type: MessageType = MessageType.Text;
 
-  constructor(id: string, data: {[key: string]: any}) {
-    this.id = id;
-    this.nickname = data['nickname'];
-    this.message = data['message'];
-    this.sent_at = data['sent_at'].toDate();
-    this.edit_on = data['edit_on']?.toDate() ?? null;
-    this.type = data['type'] == 'image' ? 'image' : 'text';
-    if(data['owner'] === localStorage.getItem('userId')) {
-      this.isOwner = true;
-    }
+  constructor(
+    id: string,
+    data: {
+      nickname: string,
+      message: string,
+      sent_at: Timestamp,
+      edit_on: Timestamp | null,
+      type: MessageType,
+      owner: string
+    } extends DocumentData ? DocumentData : any) {
+        this.id = id;
+        this.nickname = data['nickname'];
+        this.message = data['message'];
+        this.sent_at = data['sent_at'];
+        this.edit_on = data['edit_on'] ?? null;
+        this.type = data['type'];
+        if(data['owner'] === localStorage.getItem('userId')) {
+          this.isOwner = true;
+        }
   }
 }
+

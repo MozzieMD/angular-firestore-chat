@@ -9,15 +9,15 @@
           <mat-icon>more_vert</mat-icon>
         </button>
       </mat-card-header>
-      <mat-card-content *ngIf="message.type == 'text'" class="content">
+      <mat-card-content *ngIf="message.type == MessageTypes.Text" class="content">
         {{message.message}}
       </mat-card-content>
-      <mat-card-content *ngIf="message.type == 'image'" class="content-photo">
+      <mat-card-content *ngIf="message.type == MessageTypes.Image" class="content-photo">
         <img src="{{message.message}}" (load)="scrollIntoView()"/>
       </mat-card-content>
       <mat-card-footer>
-        <mat-card-subtitle *ngIf="!message.edit_on" timeago [date]="message.sent_at" [live]="true" class="timeago"></mat-card-subtitle>
-        <mat-card-subtitle *ngIf="message.edit_on" class="timeago">edited {{message.edit_on | timeago:true }}</mat-card-subtitle>
+        <mat-card-subtitle *ngIf="!message.edit_on" timeago [date]="message.sent_at.toDate()" [live]="true" class="timeago"></mat-card-subtitle>
+        <mat-card-subtitle *ngIf="message.edit_on" class="timeago">edited {{message.edit_on.toDate() | timeago:true }}</mat-card-subtitle>
       </mat-card-footer>
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="edit(message)">

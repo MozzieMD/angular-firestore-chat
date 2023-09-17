@@ -3,7 +3,7 @@ import { FirebaseService } from '../firebase.service';
 import { Message } from '../classes/message';
 import { DataUrl, NgxImageCompressService } from 'ngx-image-compress';
 import { Subject } from 'rxjs';
-
+import { MessageType } from '../classes/message-type';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -21,6 +21,8 @@ export class ChatComponent implements AfterViewInit{
   public uploading: boolean = false;
   public isNicknameInputVisible: boolean = this.nickname === '';
   public nicknameSubject = new Subject();
+  public MessageTypes = MessageType;
+  
   constructor(public firebaseService: FirebaseService, private imageCompress: NgxImageCompressService) {
   }
 
