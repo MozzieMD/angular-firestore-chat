@@ -1,0 +1,67 @@
+<div class="center-container">
+  <div class="messages">
+    <mat-card class="message" #message [class.owner]="message.isOwner" *ngFor="let message of firebaseService.lastMessages();">
+      <mat-card-header class="header">
+        <mat-card-subtitle>
+          {{message.nickname || 'Anonymous'}}
+        </mat-card-subtitle>
+        <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="message.isOwner" class="edit_button">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </mat-card-header>
+      <mat-card-content *ngIf="message.type == 'text'" class="content">
+        {{message.message}}
+      </mat-card-content>
+      <mat-card-content *ngIf="message.type == 'image'" class="content-photo">
+        <img src="{{message.message}}" (load)="scrollIntoView()"/>
+      </mat-card-content>
+      <mat-card-footer>
+        <mat-card-subtitle *ngIf="!message.edit_on" timeago [date]="message.sent_at" [live]="true" class="timeago"></mat-card-subtitle>
+        <mat-card-subtitle *ngIf="message.edit_on" class="timeago">edited {{message.edit_on | timeago:true }}</mat-card-subtitle>
+      </mat-card-footer>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="edit(message)">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-menu-item (click)="deleteMessage(message)">
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+    </mat-card>
+  </div>
+ <p class="typing" *ngIf="firebaseService.getTyping().length > 0">{{firebaseService.getTyping().join(', ')}} typing...</p>
+  <form class="form" (keydown.enter)="enterPressed($event)">
+    <button mat-icon-button color="primary" (click)="selectImage()" [mtBasicSpinner]="uploading" [hideText]="true">
+      <mat-icon>image</mat-icon>
+    </button>
+    <div class="message-inputs">
+      <mat-form-field class="full-width" *ngIf="isNicknameInputVisible">
+        <mat-label>Nickname</mat-label>
+        <input matInput placeholder="Ex. John" name="nickname" [(ngModel)]="nickname">
+        <button *ngIf="nickname" matSuffix mat-icon-button aria-label="Hide" (click)="toggleNickname()">
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+      </mat-form-field>
+      <button *ngIf="!isNicknameInputVisible" mat-icon-button aria-label="Show" (click)="toggleNickname()" class="toggleNickname">
+        <mat-icon>keyboard_arrow_up</mat-icon>
+      </button>
+      <mat-form-field class="full-width">
+        <mat-label>Message</mat-label>
+        <textarea #messageInput matInput placeholder="Ex. It makes me feel..." name="message" [(ngModel)]="message" (keydown)="typing()"></textarea>
+        <button *ngIf="messageForEdit" matSuffix mat-icon-button aria-label="Clear" (click)="stopEdit()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+    <button mat-icon-button color="primary" (click)="sendMessage()" class="send" *ngIf="!messageForEdit" [disabled]="!message">
+      <mat-icon>send</mat-icon>
+    </button>
+    <button mat-icon-button color="accent" (click)="editMessage()" class="send" *ngIf="messageForEdit" [disabled]="!message">
+      <mat-icon>save</mat-icon>
+    </button>
+  </form>
+</div>
+
+
