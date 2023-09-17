@@ -1,7 +1,7 @@
 import { Injectable,} from '@angular/core';
 import { firebaseConfig } from '../environments/firebase'; // Import your Firebase configuration
 import { FirebaseApp, initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, updateDoc, doc, orderBy, query, onSnapshot, deleteDoc, limit, Firestore, deleteField } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, setDoc, updateDoc, doc, orderBy, query, onSnapshot, deleteDoc, limit, Firestore, deleteField } from 'firebase/firestore';
 import { FirebaseStorage, getStorage, ref, uploadBytes, getDownloadURL, deleteObject} from 'firebase/storage';
 import { Subject } from 'rxjs';
 import { Message } from './classes/message';
@@ -29,8 +29,6 @@ export class FirebaseService {
   }
 
   public sendMessage = async (messageText: string, nickname: string, image: boolean = false) => {
-    if(nickname !== '')
-      localStorage.setItem('nickname', nickname);
     if(messageText === '')
       return;
     await addDoc(collection(this.firestore, 'messages'), {
@@ -94,7 +92,7 @@ export class FirebaseService {
     let key: string = localStorage.getItem('userId')!;
     let data: {[key: string]: any} = {};
     data[key] = localStorage.getItem('nickname') ?? 'Anonymous';
-    updateDoc(doc(this.firestore, 'typing', 'typing'), data);
+    setDoc(doc(this.firestore, 'typing', 'typing'), data);
   };
 
   public stopTyping = () => {
