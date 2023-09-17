@@ -49,7 +49,7 @@
       </button>
       <mat-form-field class="full-width">
         <mat-label>Message</mat-label>
-        <textarea #messageInput matInput placeholder="Ex. It makes me feel..." name="message" [(ngModel)]="message" (keydown)="typing()"></textarea>
+        <textarea #messageInput matInput placeholder="Ex. It makes me feel..." name="message" [(ngModel)]="message" (keydown)="typing()" (paste)="clipboard($event)"></textarea>
         <button *ngIf="messageForEdit" matSuffix mat-icon-button aria-label="Clear" (click)="stopEdit()">
           <mat-icon>close</mat-icon>
         </button>

@@ -4,6 +4,8 @@ import { Message } from '../classes/message';
 import { DataUrl, NgxImageCompressService } from 'ngx-image-compress';
 import { Subject } from 'rxjs';
 import { MessageType } from '../classes/message-type';
+import { blobToDataURL } from '../functions';
+import { v4 as uuidv4 } from 'uuid';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -22,7 +24,7 @@ export class ChatComponent implements AfterViewInit{
   public isNicknameInputVisible: boolean = this.nickname === '';
   public nicknameSubject = new Subject();
   public MessageTypes = MessageType;
-  
+
   constructor(public firebaseService: FirebaseService, private imageCompress: NgxImageCompressService) {
   }
 
@@ -116,4 +118,25 @@ export class ChatComponent implements AfterViewInit{
         this.sendMessage();
   }
 
+  clipboard(event: any):void {
+    const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+    let blob = null;
+    for (const item of items) {
+      if (item.type.indexOf('image') === 0) {
+        console.log(item)
+        event.preventDefault();
+        blob = item.getAsFile();
+        blobToDataURL(blob).then((dataurl) => {
+          this.imageCompress.compressFile(dataurl, 0, 50, 50).then((result: DataUrl) => {
+            fetch(result)
+            .then(res => res.blob())
+            .then((blob)=>{
+              let file = new File([blob], uuidv4(), {type: item.type});
+              this.firebaseService.uploadFile(file);
+            });
+          });
+        });
+      }
+    }
+  }
 }
