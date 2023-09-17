@@ -39,7 +39,7 @@
     <div class="message-inputs">
       <mat-form-field class="full-width" *ngIf="isNicknameInputVisible">
         <mat-label>Nickname</mat-label>
-        <input matInput placeholder="Ex. John" name="nickname" [(ngModel)]="nickname">
+        <input matInput placeholder="Ex. John" name="nickname" [(ngModel)]="nickname" (keyup)="saveNickname()">
         <button *ngIf="nickname" matSuffix mat-icon-button aria-label="Hide" (click)="toggleNickname()">
           <mat-icon>keyboard_arrow_down</mat-icon>
         </button>

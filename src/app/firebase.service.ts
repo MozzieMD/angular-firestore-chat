@@ -29,8 +29,6 @@ export class FirebaseService {
   }
 
   public sendMessage = async (messageText: string, nickname: string, image: boolean = false) => {
-    if(nickname !== '')
-      localStorage.setItem('nickname', nickname);
     if(messageText === '')
       return;
     await addDoc(collection(this.firestore, 'messages'), {
@@ -93,7 +91,7 @@ export class FirebaseService {
     this.isTyping = true;
     let key: string = localStorage.getItem('userId')!;
     let data: {[key: string]: any} = {};
-    data[key] = localStorage.getItem('nickname') ?? 'Anonymous';
+    data[key] = localStorage.getItem('nickname') || 'Anonymous';
     updateDoc(doc(this.firestore, 'typing', 'typing'), data);
   };
 
