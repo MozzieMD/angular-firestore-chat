@@ -70,8 +70,11 @@ export class ChatComponent implements AfterViewInit{
     this.firebaseService.deleteMessage(message);
   }
 
-  toggleNickname():void {
+  saveNickname():void {
     localStorage.setItem('nickname', this.nickname);
+  }
+
+  toggleNickname():void {
     this.isNicknameInputVisible = !this.isNicknameInputVisible;
     this.nicknameSubject.next(this.isNicknameInputVisible);
   }
