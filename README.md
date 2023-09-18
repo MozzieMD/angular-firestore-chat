@@ -4,6 +4,20 @@ Mac(Safari) screenshot and Android screenshot
 <img width="400" alt="Mac screenshot" src="https://github.com/MozzieMD/angular-firestore-chat/assets/13788246/33452304-4552-460c-8dec-cf9a88941ba5">
 <img width="280" alt="Android screenshot" src="https://github.com/MozzieMD/angular-firestore-chat/assets/13788246/27469110-c5e0-444e-8e29-f75ed3a55bde">
 
+
+Create firebase.ts in /src/app/environments with firestore config
+
+```javascript
+export const firebaseConfig = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
+};
+```
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.2.
 
 ## Development server
