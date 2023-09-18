@@ -1,6 +1,6 @@
 <div class="center-container">
   <div class="messages">
-    <mat-card class="message" #message [class.owner]="message.isOwner" *ngFor="let message of firebaseService.lastMessages();">
+    <mat-card class="message" #message [class.owner]="message.isOwner" *ngFor="let message of chatService.lastMessages();">
       <mat-card-header class="header">
         <mat-card-subtitle>
           {{message.nickname || 'Anonymous'}}
@@ -31,7 +31,7 @@
       </mat-menu>
     </mat-card>
   </div>
- <p class="typing" *ngIf="firebaseService.getTyping().length > 0">{{firebaseService.getTyping().join(', ')}} typing...</p>
+ <p class="typing" *ngIf="chatService.getTyping().length > 0">{{chatService.getTyping().join(', ')}} typing...</p>
   <form class="form" (keydown.enter)="enterPressed($event)">
     <button mat-icon-button color="primary" (click)="selectImage()" [mtBasicSpinner]="uploading" [hideText]="true">
       <mat-icon>image</mat-icon>
