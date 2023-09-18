@@ -123,8 +123,9 @@ export class ChatComponent implements AfterViewInit{
     let blob = null;
     for (const item of items) {
       if (item.type.indexOf('image') === 0) {
-        console.log(item)
         event.preventDefault();
+        if(this.messageForEdit)
+          return;
         blob = item.getAsFile();
         blobToDataURL(blob).then((dataurl) => {
           this.imageCompress.compressFile(dataurl, 0, 50, 50).then((result: DataUrl) => {
