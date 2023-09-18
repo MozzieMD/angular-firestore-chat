@@ -1,25 +1,26 @@
 import { Injectable,} from '@angular/core';
-import { firebaseConfig } from '../environments/firebase'; // Import your Firebase configuration
+import { firebaseConfig } from '../../environments/firebase'; // Import your Firebase configuration
 import { FirebaseApp, initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, setDoc, updateDoc, doc, orderBy, query, onSnapshot, deleteDoc, limit, Firestore, deleteField } from 'firebase/firestore';
-import { FirebaseStorage, getStorage, ref, uploadBytes, getDownloadURL, deleteObject} from 'firebase/storage';
+import { FirebaseStorage, getStorage, ref, uploadBytes, getDownloadURL} from 'firebase/storage';
 import { Subject } from 'rxjs';
-import { Message } from './classes/message';
-import { MessageType } from './classes/message-type';
-import { isImage } from './functions'
+import { Message } from '../classes/message';
+import { MessageType } from '../classes/message-type';
+import { isImage } from '../functions'
+import { ChatServiceProvider } from '../interfaces/chat-service-provider';
 
 @Injectable({
   providedIn: 'root',
 })
 
-export class FirebaseService {
+export class FirebaseService implements ChatServiceProvider {
   private app: FirebaseApp;
   private firestore: Firestore;
   private storage: FirebaseStorage;
-  private messagesSubject = new Subject();
-  private messages: Array<Message> = [];
-  private typingSubject = new Subject();
-  private typing: Array<string> = [];
+  private messagesSubject = new Subject<Array<Message>>();
+  private messages: Message[] = [];
+  private typingSubject = new Subject<Array<string>>();
+  private typing: string[] = [];
   private isTyping: boolean = false;
 
   constructor() {
@@ -122,7 +123,7 @@ export class FirebaseService {
     });
   };
 
-  public uploadFile = async (file: File) => {
+  public uploadFile = async (file: File): Promise<void> => {
     let storageRef = ref(this.storage, file.name);
 
     await uploadBytes(storageRef, file).then(() => {
@@ -134,11 +135,11 @@ export class FirebaseService {
     });
   };
 
-  public lastMessages = () => {
+  public lastMessages = (): Message[] => {
     return this.messages;
   };
 
-  public getTyping = () => {
+  public getTyping = (): string[] => {
     return this.typing;
   }
 }

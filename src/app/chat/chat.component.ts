@@ -1,15 +1,18 @@
 import { Component, ElementRef, QueryList, AfterViewInit, ViewChildren, ViewChild} from '@angular/core';
-import { FirebaseService } from '../firebase.service';
 import { Message } from '../classes/message';
 import { DataUrl, NgxImageCompressService } from 'ngx-image-compress';
 import { Subject } from 'rxjs';
 import { MessageType } from '../classes/message-type';
 import { blobToDataURL } from '../functions';
 import { v4 as uuidv4 } from 'uuid';
+import { ChatServiceProvider } from '../interfaces/chat-service-provider';
+import { FirebaseService } from '../services/firebase.service';
+
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css']
+  styleUrls: ['./chat.component.css'],
+  providers:[{provide: ChatServiceProvider, useClass: FirebaseService}]
 })
 export class ChatComponent implements AfterViewInit{
   @ViewChildren('message',{ read: ElementRef})
@@ -25,7 +28,7 @@ export class ChatComponent implements AfterViewInit{
   public nicknameSubject = new Subject();
   public MessageTypes = MessageType;
 
-  constructor(public firebaseService: FirebaseService, private imageCompress: NgxImageCompressService) {
+  constructor(public chatService: ChatServiceProvider, private imageCompress: NgxImageCompressService) {
   }
 
   public scrollIntoView(): void {
@@ -41,12 +44,12 @@ export class ChatComponent implements AfterViewInit{
   }
 
   sendMessage():void {
-    this.firebaseService.sendMessage(this.message, this.nickname);
+    this.chatService.sendMessage(this.message, this.nickname);
     this.message = '';
   }
 
   editMessage(): void {
-    let response = this.firebaseService.editMessage(this.messageForEdit!, this.message);
+    let response = this.chatService.editMessage(this.messageForEdit!, this.message);
     response.then(() => {
       this.messageForEdit = null;
       this.message = '';
@@ -71,7 +74,7 @@ export class ChatComponent implements AfterViewInit{
   deleteMessage(message: Message):void {
     if(!message.isOwner)
       return;
-    this.firebaseService.deleteMessage(message);
+    this.chatService.deleteMessage(message);
   }
 
   saveNickname():void {
@@ -84,10 +87,10 @@ export class ChatComponent implements AfterViewInit{
   }
 
   typing():void {
-    this.firebaseService.startTyping();
+    this.chatService.startTyping();
     clearTimeout(this.typingTimeout);
     this.typingTimeout = setTimeout(() => {
-      this.firebaseService.stopTyping();
+      this.chatService.stopTyping();
     }, 1000);
   }
 
@@ -100,7 +103,7 @@ export class ChatComponent implements AfterViewInit{
           .then(res => res.blob())
           .then((blob)=>{
             let file = new File([blob], fileName, {type: 'image/jpeg'});
-            this.firebaseService.uploadFile(file).then(() => {
+            this.chatService.uploadFile(file).then(() => {
               this.uploading = false;
             });
           });
@@ -133,7 +136,7 @@ export class ChatComponent implements AfterViewInit{
             .then(res => res.blob())
             .then((blob)=>{
               let file = new File([blob], uuidv4(), {type: item.type});
-              this.firebaseService.uploadFile(file);
+              this.chatService.uploadFile(file);
             });
           });
         });
